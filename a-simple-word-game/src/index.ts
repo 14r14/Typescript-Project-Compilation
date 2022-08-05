@@ -38,6 +38,15 @@ function question(prompt: string): Promise<string> {
     rl.question(prompt, (input: string) => resolve(input));
   });
 }
+
+async function checkIfGuessed(guess: string): Promise<boolean> {
+  if (guessedLetters.indexOf(guess) > -1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 async function getGuess(): Promise<string> {
   while (true) {
     const answer: string = await question('Enter a letter guess: ');
@@ -47,7 +56,13 @@ async function getGuess(): Promise<string> {
     } else if (answer.length < 1) {
       console.log('Please enter a guess!');
       continue;
+    } else if (await checkIfGuessed(answer)) {
+      console.log(
+        "You have already guessed this letter. Try guessing a letter you haven't before."
+      );
+      continue;
     } else {
+      guessedLetters.push(answer);
       return answer;
     }
   }
